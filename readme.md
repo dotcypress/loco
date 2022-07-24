@@ -1,6 +1,6 @@
 # loco
 
-STM32G041K8Ux
+Toy CNC platform.
 
 ## License
 
