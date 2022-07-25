@@ -4,7 +4,10 @@ pub extern crate stm32g0xx_hal as hal;
 
 mod pins;
 #[cfg(feature = "store")]
-pub mod store;
+mod store;
+
+#[cfg(feature = "store")]
+pub use store::*;
 
 pub use hal::prelude::*;
 pub use hal::stm32;

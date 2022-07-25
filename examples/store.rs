@@ -15,7 +15,7 @@ fn main() -> ! {
     let pins = Pins::new(dp.GPIOA, dp.GPIOB, dp.GPIOC, &mut rcc);
     let mut led = led(pins.g8);
 
-    let mut kvs = store::store(
+    let mut kvs = store(
         dp.SPI1,
         pins.flash_sck,
         pins.flash_miso,

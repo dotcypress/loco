@@ -2,7 +2,6 @@
 runner = "probe-run --chip STM32G041K8U"
 
 rustflags = [
-  "-C", "linker=arm-none-eabi-ld",
   "-C", "link-arg=-Tlink.x",
 ]
 
