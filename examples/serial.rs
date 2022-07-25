@@ -3,6 +3,7 @@
 #![deny(warnings)]
 
 extern crate panic_halt;
+
 use core::fmt::Write;
 use hal::serial::BasicConfig;
 use loco::*;

@@ -3,6 +3,7 @@
 #![deny(warnings)]
 
 extern crate panic_halt;
+
 use loco::*;
 
 #[cortex_m_rt::entry]
