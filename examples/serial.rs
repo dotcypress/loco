@@ -23,6 +23,6 @@ fn main() -> ! {
     loop {
         led.toggle().ok();
         write!(serial, "tick\r\n").ok();
-        delay.delay(500.ms());
+        delay.delay(500.millis());
     }
 }

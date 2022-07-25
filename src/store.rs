@@ -5,7 +5,7 @@ use kvs::adapters::spi::{SpiAdapterConfig, SpiStoreAdapter};
 use kvs::*;
 
 pub const KVS_BUCKETS: usize = 256;
-pub const KVS_SLOTS: usize = 32;
+pub const KVS_SLOTS: usize = 16;
 pub const KVS_MAX_HOPS: usize = 64;
 pub const KVS_MAGIC: u32 = 0x10c0;
 pub const FLASH_ADDR_BYTES: usize = 4;

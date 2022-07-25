@@ -48,7 +48,7 @@ pub fn serial(
     cfg: serial::BasicConfig,
     rcc: &mut Rcc,
 ) -> UartDev {
-    uart_dev.usart(tx, rx, cfg, rcc).unwrap()
+    uart_dev.usart((tx, rx), cfg, rcc).unwrap()
 }
 
 pub struct Encoder {

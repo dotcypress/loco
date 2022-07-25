@@ -11,9 +11,9 @@ repository = "https://github.com/dotcypress/loco"
 authors = ["Vitaly Domnikov <oss@vitaly.codes>"]
 
 [dependencies]
-cortex-m-rt = "0.6.15"
+cortex-m-rt = "0.7.1"
 panic-halt = "0.2.0"
-stm32g0xx-hal = { version = "0.1.5", features = ["rt", "stm32g041"] }
+stm32g0xx-hal = { path = "../hal/stm32g0xx-hal", features = ["rt", "stm32g041"] }
 kvs = { version = "0.0.3", optional = true }
 
 [features]
