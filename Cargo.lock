@@ -438,6 +438,7 @@ dependencies = [
 [[package]]
 name = "stm32g0xx-hal"
 version = "0.1.5"
+source = "git+https://github.com/stm32-rs/stm32g0xx-hal#fab9315fe2d88e0ea1090b1999132b32dc06417e"
 dependencies = [
  "bare-metal 1.0.0",
  "cortex-m",

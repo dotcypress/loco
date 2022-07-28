@@ -58,6 +58,6 @@ pub struct Encoder {
     pub dev: EncoderDev,
 }
 
-pub fn encoder(encoder_dev: stm32::TIM1, enc1: Enc1, enc2: Enc2, rcc: &mut Rcc) -> EncoderDev {
-    encoder_dev.qei((enc1, enc2), rcc)
+pub fn encoder(encoder_tim: stm32::TIM1, enc1: Enc1, enc2: Enc2, rcc: &mut Rcc) -> EncoderDev {
+    encoder_tim.qei((enc1, enc2), rcc)
 }
