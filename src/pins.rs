@@ -1,5 +1,5 @@
 use crate::hal::gpio::{gpioa::*, gpiob::*, gpioc::*};
-use hal::gpio::{DefaultMode, OpenDrain, Output};
+use hal::gpio::{DefaultMode, OpenDrain, Output, PushPull, Input, PullUp};
 use hal::prelude::*;
 use hal::rcc::Rcc;
 use hal::stm32::*;
@@ -40,15 +40,15 @@ pub type Enc1 = PA8<DefaultMode>;
 pub type Enc2 = PA9<DefaultMode>;
 
 // Motors
-pub type M1En = PC15<DefaultMode>;
-pub type M1Fault = PC6<DefaultMode>;
-pub type M1Dir = PC14<DefaultMode>;
-pub type M1Clk = PB9<DefaultMode>;
+pub type M1En = PC15<Output<PushPull>>;
+pub type M1Fault = PC6<Input<PullUp>>;
+pub type M1Dir = PC14<Output<PushPull>>;
+pub type M1Clk = PB9<Output<PushPull>>;
 
-pub type M2En = PA15<DefaultMode>;
-pub type M2Fault = PB2<DefaultMode>;
-pub type M2Dir = PB4<DefaultMode>;
-pub type M2Clk = PB8<DefaultMode>;
+pub type M2En = PA15<Output<PushPull>>;
+pub type M2Fault = PB2<Input<PullUp>>;
+pub type M2Dir = PB4<Output<PushPull>>;
+pub type M2Clk = PB8<Output<PushPull>>;
 
 pub struct Pins {
     /// I2C
@@ -137,15 +137,15 @@ impl Pins {
             enc2: port_a.pa9,
 
             // Motors
-            m1_en: port_c.pc15,
-            m1_fault: port_c.pc6,
-            m1_dir: port_c.pc14,
-            m1_clk: port_b.pb9,
+            m1_en: port_c.pc15.into(),
+            m1_fault: port_c.pc6.into(),
+            m1_dir: port_c.pc14.into(),
+            m1_clk: port_b.pb9.into(),
 
-            m2_en: port_a.pa15,
-            m2_fault: port_b.pb2,
-            m2_dir: port_b.pb4,
-            m2_clk: port_b.pb8,
+            m2_en: port_a.pa15.into(),
+            m2_fault: port_b.pb2.into(),
+            m2_dir: port_b.pb4.into(),
+            m2_clk: port_b.pb8.into(),
         }
     }
 }
