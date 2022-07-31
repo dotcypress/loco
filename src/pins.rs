@@ -1,5 +1,5 @@
 use crate::hal::gpio::{gpioa::*, gpiob::*, gpioc::*};
-use hal::gpio::{DefaultMode, OpenDrain, Output, PushPull, Input, PullUp};
+use hal::gpio::{DefaultMode, Input, OpenDrain, Output, PullUp, PushPull};
 use hal::prelude::*;
 use hal::rcc::Rcc;
 use hal::stm32::*;

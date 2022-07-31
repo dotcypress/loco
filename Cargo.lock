@@ -211,6 +211,7 @@ name = "loco"
 version = "0.0.0"
 dependencies = [
  "cortex-m-rt",
+ "heapless",
  "kvs",
  "panic-halt",
  "stm32g0xx-hal",
