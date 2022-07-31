@@ -181,7 +181,7 @@ where
 
     pub fn load(&mut self, job: &StepperSpin) {
         self.pulses = job.pulses;
-        self.prescaler = MAX_FEED_RATE.saturating_sub(job.feed_rate).min(1);
+        self.prescaler = MAX_FEED_RATE.saturating_sub(job.feed_rate).max(1);
         self.cnt = 0;
         self.pulse_pin.set_low().ok();
         self.dir_pin.set_state(job.dir.into()).ok();
