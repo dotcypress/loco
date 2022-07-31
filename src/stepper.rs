@@ -160,6 +160,7 @@ pub struct Stepper<PP, DP, EP, const MAX_FEED_RATE: u8> {
     pulse_pin: PP,
     dir_pin: DP,
     en_pin: EP,
+    reverse: bool,
 }
 
 impl<PP, DP, EP, const MAX_FEED_RATE: u8> Stepper<PP, DP, EP, MAX_FEED_RATE>
@@ -173,10 +174,15 @@ where
             pulses: 0,
             cnt: 0,
             prescaler: 0,
+            reverse: false,
             pulse_pin,
             dir_pin,
             en_pin,
         }
+    }
+
+    pub fn set_reverse(&mut self, reverse: bool) {
+        self.reverse = reverse;
     }
 
     pub fn load(&mut self, job: &StepperSpin) {
@@ -184,7 +190,11 @@ where
         self.prescaler = MAX_FEED_RATE.saturating_sub(job.feed_rate).max(1);
         self.cnt = 0;
         self.pulse_pin.set_low().ok();
-        self.dir_pin.set_state(job.dir.into()).ok();
+        let mut dir = job.dir;
+        if self.reverse {
+            dir.invert();
+        }
+        self.dir_pin.set_state(dir.into()).ok();
         self.en_pin.set_high().ok();
     }
 
