@@ -39,8 +39,8 @@ pub enum Dir {
 }
 
 impl Dir {
-    pub fn invert(&mut self) {
-        *self = match self {
+    pub fn reverse(self) -> Dir {
+        match self {
             Dir::CW => Dir::CCW,
             Dir::CCW => Dir::CW,
         }
@@ -190,10 +190,11 @@ where
         self.prescaler = MAX_FEED_RATE.saturating_sub(job.feed_rate).max(1);
         self.cnt = 0;
         self.pulse_pin.set_low().ok();
-        let mut dir = job.dir;
-        if self.reverse {
-            dir.invert();
-        }
+        let dir = if self.reverse {
+            job.dir.reverse()
+        } else {
+            job.dir
+        };
         self.dir_pin.set_state(dir.into()).ok();
         self.en_pin.set_high().ok();
     }
