@@ -31,7 +31,7 @@ impl From<StepperSpin> for StepperJob {
     }
 }
 
-#[derive(Clone, Copy, Debug, Default)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
 pub enum Dir {
     #[default]
     CW,
