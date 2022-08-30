@@ -20,6 +20,7 @@ pub type UartRx = PA3<DefaultMode>;
 pub type FlashSck = PB3<DefaultMode>;
 pub type FlashMiso = PA11<DefaultMode>;
 pub type FlashMosi = PA12<DefaultMode>;
+pub type FlashChipSelect = PA13<Output<PushPull>>;
 pub type FlashSpiCs = SwdIo;
 
 /// GPIO

@@ -14,9 +14,23 @@ authors = ["Vitaly Domnikov <oss@vitaly.codes>"]
 cortex-m-rt = "0.7.1"
 panic-halt = "0.2.0"
 stm32g0xx-hal = { git = "https://github.com/stm32-rs/stm32g0xx-hal", features = ["rt", "stm32g041"] }
-kvs = { version = "0.0.4", optional = true }
+kvs = { path ="../kvs/", optional = true }
 heapless = { version = "0.7.15", optional = true }
 
+[dev_dependencies]
+defmt = "0.3.0"
+defmt-rtt = "0.3.1"
+
 [features]
+default = ["store"]
 store = ["dep:kvs"]
 stepper = ["dep:heapless"]
+
+[profile.dev]
+incremental = false
+opt-level = 2
+
+[profile.release]
+incremental = false
+lto = true
+opt-level = "z"
