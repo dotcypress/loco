@@ -14,7 +14,7 @@ authors = ["Vitaly Domnikov <oss@vitaly.codes>"]
 cortex-m-rt = "0.7.1"
 panic-halt = "0.2.0"
 stm32g0xx-hal = { git = "https://github.com/stm32-rs/stm32g0xx-hal", features = ["rt", "stm32g041"] }
-kvs = { path ="../kvs/", optional = true }
+kvs = { version="0.0.4", optional = true }
 heapless = { version = "0.7.15", optional = true }
 
 [dev_dependencies]

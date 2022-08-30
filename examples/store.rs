@@ -31,7 +31,7 @@ fn main() -> ! {
     kvs.insert(b"key", b"value").unwrap();
 
     loop {
-        if kvs.exists(b"key").unwrap() {
+        if kvs.lookup(b"key").is_ok() {
             led.toggle().ok();
         }
         delay.delay(100.millis());
