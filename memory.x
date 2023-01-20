@@ -1,4 +1,4 @@
-/* Linker script for the STM32G041K8Ux */
+/* Linker script for the STM32G041K6Ux */
 MEMORY
 {
   FLASH : ORIGIN = 0x08000000, LENGTH = 64K
