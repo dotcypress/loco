@@ -1,55 +1,70 @@
-use crate::hal::gpio::{gpioa::*, gpiob::*, gpioc::*};
-use hal::gpio::{DefaultMode, Input, OpenDrain, Output, PullUp, PushPull};
+use crate::hal::gpio::{gpioa::*, gpiob::*, gpioc::*, gpiod::*, gpiof::*};
+use hal::gpio::{DefaultMode, Floating, Input, OpenDrain, Output, PushPull};
 use hal::prelude::*;
 use hal::rcc::Rcc;
 use hal::stm32::*;
 
 /// I2C
-pub type I2cScl = PB6<Output<OpenDrain>>;
-pub type I2cSda = PA10<Output<OpenDrain>>;
+pub type I2cScl = PB8<Output<OpenDrain>>;
+pub type I2cSda = PB9<Output<OpenDrain>>;
 
 // SWD
 pub type SwdIo = PA13<DefaultMode>;
 pub type SwdClk = PA14<DefaultMode>;
 
 /// UART
-pub type UartTx = PA2<DefaultMode>;
-pub type UartRx = PA3<DefaultMode>;
-
-/// SPI FLASH
-pub type FlashSck = PB3<DefaultMode>;
-pub type FlashMiso = PA11<DefaultMode>;
-pub type FlashMosi = PA12<DefaultMode>;
-pub type FlashChipSelect = PA13<Output<PushPull>>;
-pub type FlashSpiCs = SwdIo;
+pub type UartTx = PB6<DefaultMode>;
+pub type UartRx = PB7<DefaultMode>;
 
 /// GPIO
-pub type G1 = PA6<DefaultMode>;
-pub type G2 = PA7<DefaultMode>;
-pub type G3 = PB0<DefaultMode>;
-pub type G4 = PB1<DefaultMode>;
-pub type G5 = PA0<DefaultMode>;
-pub type G6 = PA1<DefaultMode>;
-pub type G7 = PA4<DefaultMode>;
-pub type G8 = PA5<DefaultMode>;
-pub type LedPin = PA5<Output<OpenDrain>>;
+pub type G1 = PA0<DefaultMode>;
+pub type G2 = PA1<DefaultMode>;
+pub type G3 = PA2<DefaultMode>;
+pub type G4 = PA3<DefaultMode>;
+pub type G5 = PA4<DefaultMode>;
+pub type G6 = PA5<DefaultMode>;
 
-/// Input
-pub type Btn1 = PB5<DefaultMode>;
-pub type Btn2 = PB7<DefaultMode>;
-pub type Enc1 = PA8<DefaultMode>;
-pub type Enc2 = PA9<DefaultMode>;
+// DC Motors
+pub type MotorsRef = PB4<DefaultMode>;
+pub type MotorsFault = PD2<Input<Floating>>;
+pub type MotorsStandby = PD0<Output<PushPull>>;
+pub type MotorsEnable = PD1<Output<PushPull>>;
+pub type Motor1Phase = PA12<Output<PushPull>>;
+pub type Motor1PWM = PA10<Output<PushPull>>;
+pub type Motor2Phase = PA15<Output<PushPull>>;
+pub type Motor2PWM = PA11<Output<PushPull>>;
 
-// Motors
-pub type M1En = PC15<Output<PushPull>>;
-pub type M1Fault = PC6<Input<PullUp>>;
-pub type M1Dir = PC14<Output<PushPull>>;
-pub type M1Clk = PB9<Output<PushPull>>;
+// Stepper Motors
+pub type Stepper1Ref = PC7<DefaultMode>;
+pub type Stepper1Fault = PC13<Input<Floating>>;
+pub type Stepper1Standby = PB5<Output<PushPull>>;
+pub type Stepper1Enable = PC14<Output<PushPull>>;
+pub type Stepper1Step = PD3<Output<PushPull>>;
+pub type Stepper1Dir = PB3<Output<PushPull>>;
 
-pub type M2En = PA15<Output<PushPull>>;
-pub type M2Fault = PB2<Input<PullUp>>;
-pub type M2Dir = PB4<Output<PushPull>>;
-pub type M2Clk = PB8<Output<PushPull>>;
+pub type Stepper2Ref = PB1<DefaultMode>;
+pub type Stepper2Fault = PB10<Input<Floating>>;
+pub type Stepper2Standby = PB0<Output<PushPull>>;
+pub type Stepper2Enable = PB2<Output<PushPull>>;
+pub type Stepper2Step = PA6<Output<PushPull>>;
+pub type Stepper2Dir = PA7<Output<PushPull>>;
+
+pub type Stepper3Ref = PA8<DefaultMode>;
+pub type Stepper3Fault = PC6<Input<Floating>>;
+pub type Stepper3Standby = PB15<Output<PushPull>>;
+pub type Stepper3Enable = PA9<Output<PushPull>>;
+pub type Stepper3Step = PB14<Output<PushPull>>;
+pub type Stepper3Dir = PB13<Output<PushPull>>;
+
+// Power switches
+pub type Switch1Enable = PB12<Output<PushPull>>;
+pub type Switch1Sense = PB11<Input<Floating>>;
+
+pub type Switch2Enable = PF2<Output<PushPull>>;
+pub type Switch2Sense = PF1<Input<Floating>>;
+
+pub type GpioSwitchEnable = PF3<Output<PushPull>>;
+pub type GpioSwitchSense = PC15<Input<Floating>>;
 
 pub struct Pins {
     /// I2C
@@ -64,11 +79,6 @@ pub struct Pins {
     pub uart_tx: UartTx,
     pub uart_rx: UartRx,
 
-    /// SPI FLASH
-    pub flash_sck: FlashSck,
-    pub flash_miso: FlashMiso,
-    pub flash_mosi: FlashMosi,
-
     /// GPIO
     pub g1: G1,
     pub g2: G2,
@@ -76,77 +86,127 @@ pub struct Pins {
     pub g4: G4,
     pub g5: G5,
     pub g6: G6,
-    pub g7: G7,
-    pub g8: G8,
 
-    /// Input
-    pub btn1: Btn1,
-    pub btn2: Btn2,
-    pub enc1: Enc1,
-    pub enc2: Enc2,
+    // DC Motors
+    pub motors_ref: MotorsRef,
+    pub motors_fault: MotorsFault,
+    pub motors_standby: MotorsStandby,
+    pub motors_enable: MotorsEnable,
+    pub motor1_phase: Motor1Phase,
+    pub motor1pwm: Motor1PWM,
+    pub motor2_phase: Motor2Phase,
+    pub motor2pwm: Motor2PWM,
 
-    // Motors
-    pub m1_en: M1En,
-    pub m1_fault: M1Fault,
-    pub m1_dir: M1Dir,
-    pub m1_clk: M1Clk,
+    // Stepper Motors
+    pub stepper1_ref: Stepper1Ref,
+    pub stepper1_fault: Stepper1Fault,
+    pub stepper1_standby: Stepper1Standby,
+    pub stepper1_enable: Stepper1Enable,
+    pub stepper1_step: Stepper1Step,
+    pub stepper1_dir: Stepper1Dir,
 
-    pub m2_en: M2En,
-    pub m2_fault: M2Fault,
-    pub m2_dir: M2Dir,
-    pub m2_clk: M2Clk,
+    pub stepper2_ref: Stepper2Ref,
+    pub stepper2_fault: Stepper2Fault,
+    pub stepper2_standby: Stepper2Standby,
+    pub stepper2_enable: Stepper2Enable,
+    pub stepper2_step: Stepper2Step,
+    pub stepper2_dir: Stepper2Dir,
+
+    pub stepper3_ref: Stepper3Ref,
+    pub stepper3_fault: Stepper3Fault,
+    pub stepper3_standby: Stepper3Standby,
+    pub stepper3_enable: Stepper3Enable,
+    pub stepper3_step: Stepper3Step,
+    pub stepper3_dir: Stepper3Dir,
+
+    // Power switches
+    pub switch1_enable: Switch1Enable,
+    pub switch1_sense: Switch1Sense,
+
+    pub switch2_enable: Switch2Enable,
+    pub switch2_sense: Switch2Sense,
+
+    pub gpio_switch_enable: GpioSwitchEnable,
+    pub gpio_switch_sense: GpioSwitchSense,
 }
 
 impl Pins {
-    pub fn new(gpioa: GPIOA, gpiob: GPIOB, gpioc: GPIOC, rcc: &mut Rcc) -> Self {
+    pub fn new(
+        gpioa: GPIOA,
+        gpiob: GPIOB,
+        gpioc: GPIOC,
+        gpiod: GPIOD,
+        gpiof: GPIOF,
+        rcc: &mut Rcc,
+    ) -> Self {
         let port_a = gpioa.split(rcc);
         let port_b = gpiob.split(rcc);
         let port_c = gpioc.split(rcc);
+        let port_d = gpiod.split(rcc);
+        let port_f = gpiof.split(rcc);
 
         Self {
             /// I2C
-            i2c_scl: port_b.pb6.into_open_drain_output_in_state(PinState::High),
-            i2c_sda: port_a.pa10.into_open_drain_output_in_state(PinState::High),
+            i2c_scl: port_b.pb8.into_open_drain_output_in_state(PinState::High),
+            i2c_sda: port_b.pb9.into_open_drain_output_in_state(PinState::High),
 
             /// SWD
             swd_io: port_a.pa13,
             swd_clk: port_a.pa14,
 
             /// UART
-            uart_tx: port_a.pa2,
-            uart_rx: port_a.pa3,
-
-            /// SPI FLASH
-            flash_sck: port_b.pb3,
-            flash_miso: port_a.pa11,
-            flash_mosi: port_a.pa12,
+            uart_tx: port_b.pb6,
+            uart_rx: port_b.pb7,
 
             /// GPIO
-            g1: port_a.pa6,
-            g2: port_a.pa7,
-            g3: port_b.pb0,
-            g4: port_b.pb1,
-            g5: port_a.pa0,
-            g6: port_a.pa1,
-            g7: port_a.pa4,
-            g8: port_a.pa5,
+            g1: port_a.pa0,
+            g2: port_a.pa1,
+            g3: port_a.pa2,
+            g4: port_a.pa3,
+            g5: port_a.pa4,
+            g6: port_a.pa5,
 
-            /// Input
-            btn1: port_b.pb5,
-            btn2: port_b.pb7,
-            enc1: port_a.pa8,
-            enc2: port_a.pa9,
+            // DC Motors
+            motors_ref: port_b.pb4,
+            motors_fault: port_d.pd2.into(),
+            motors_standby: port_d.pd0.into(),
+            motors_enable: port_d.pd1.into(),
+            motor1_phase: port_a.pa12.into(),
+            motor1pwm: port_a.pa10.into(),
+            motor2_phase: port_a.pa15.into(),
+            motor2pwm: port_a.pa11.into(),
 
-            // Motors
-            m1_en: port_c.pc15.into(),
-            m1_fault: port_c.pc6.into(),
-            m1_dir: port_c.pc14.into(),
-            m1_clk: port_b.pb9.into(),
+            // Stepper Motors
+            stepper1_ref: port_c.pc7,
+            stepper1_fault: port_c.pc13.into(),
+            stepper1_standby: port_b.pb5.into(),
+            stepper1_enable: port_c.pc14.into(),
+            stepper1_step: port_d.pd3.into(),
+            stepper1_dir: port_b.pb3.into(),
 
-            m2_en: port_a.pa15.into(),
-            m2_fault: port_b.pb2.into(),
-            m2_dir: port_b.pb4.into(),
-            m2_clk: port_b.pb8.into(),
+            stepper2_ref: port_b.pb1,
+            stepper2_fault: port_b.pb10.into(),
+            stepper2_standby: port_b.pb0.into(),
+            stepper2_enable: port_b.pb2.into(),
+            stepper2_step: port_a.pa6.into(),
+            stepper2_dir: port_a.pa7.into(),
+
+            stepper3_ref: port_a.pa8,
+            stepper3_fault: port_c.pc6.into(),
+            stepper3_standby: port_b.pb15.into(),
+            stepper3_enable: port_a.pa9.into(),
+            stepper3_step: port_b.pb14.into(),
+            stepper3_dir: port_b.pb13.into(),
+
+            // Power switches
+            switch1_enable: port_b.pb12.into(),
+            switch1_sense: port_b.pb11.into(),
+
+            switch2_enable: port_f.pf2.into(),
+            switch2_sense: port_f.pf1.into(),
+
+            gpio_switch_enable: port_f.pf3.into(),
+            gpio_switch_sense: port_c.pc15.into(),
         }
     }
 }

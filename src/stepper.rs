@@ -3,19 +3,19 @@ use core::mem::MaybeUninit;
 use heapless::Deque;
 
 #[derive(Clone, Copy, Debug)]
-pub enum StepperJob {
+pub enum Job {
     ChannelSync(usize),
-    Spin(StepperSpin),
+    Spin(Spin),
 }
 
 #[derive(Clone, Copy, Debug)]
-pub struct StepperSpin {
+pub struct Spin {
     pub dir: Dir,
     pub pulses: u16,
     pub feed_rate: u8,
 }
 
-impl StepperSpin {
+impl Spin {
     pub fn new(pulses: u16, dir: Dir, feed_rate: u8) -> Self {
         Self {
             pulses,
@@ -25,9 +25,9 @@ impl StepperSpin {
     }
 }
 
-impl From<StepperSpin> for StepperJob {
-    fn from(spin: StepperSpin) -> Self {
-        StepperJob::Spin(spin)
+impl From<Spin> for Job {
+    fn from(spin: Spin) -> Self {
+        Job::Spin(spin)
     }
 }
 
@@ -57,7 +57,7 @@ impl From<Dir> for PinState {
 }
 
 pub struct ESC<const CH: usize, const N: usize> {
-    jobs: [MaybeUninit<Deque<StepperJob, N>>; CH],
+    jobs: [MaybeUninit<Deque<Job, N>>; CH],
     started: bool,
 }
 
@@ -75,7 +75,7 @@ impl<const CH: usize, const N: usize> Default for ESC<CH, N> {
 }
 
 impl<const CH: usize, const N: usize> ESC<CH, N> {
-    const INIT: MaybeUninit<Deque<StepperJob, N>> = MaybeUninit::uninit();
+    const INIT: MaybeUninit<Deque<Job, N>> = MaybeUninit::uninit();
 
     pub fn reset(&mut self) {
         self.started = false;
@@ -102,34 +102,28 @@ impl<const CH: usize, const N: usize> ESC<CH, N> {
         res
     }
 
-    pub fn push_job<J: Into<StepperJob>>(
-        &mut self,
-        motor_idx: usize,
-        job: J,
-    ) -> Result<(), StepperJob> {
+    pub fn push_job<J: Into<Job>>(&mut self, motor_idx: usize, job: J) -> Result<(), Job> {
         let job = job.into();
-        let queue = self.motor_queue(motor_idx).ok_or(job)?;
-
-        queue.push_back(job)
+        self.motor_queue(motor_idx).ok_or(job)?.push_back(job)
     }
 
-    pub fn poll(&mut self, motor_idx: usize) -> Option<StepperSpin> {
+    pub fn poll(&mut self, motor_idx: usize) -> Option<Spin> {
         if !self.started {
             return None;
         }
         match self.motor_queue(motor_idx)?.pop_front() {
-            Some(StepperJob::Spin(job)) => Some(job),
-            Some(StepperJob::ChannelSync(sync_idx)) => {
-                let sync_queue = self.motor_queue(sync_idx)?;
+            Some(Job::Spin(job)) => Some(job),
+            Some(Job::ChannelSync(ch)) => {
+                let sync_queue = self.motor_queue(ch)?;
                 match sync_queue.front() {
-                    None => {}
-                    Some(StepperJob::ChannelSync(idx)) if sync_idx == *idx => {
+                    Some(Job::ChannelSync(idx)) if *idx == motor_idx => {
                         sync_queue.pop_front();
                     }
+                    None => {}
                     _ => {
                         self.motor_queue(motor_idx)?
-                            .push_front(StepperJob::ChannelSync(sync_idx))
-                            .ok();
+                            .push_front(Job::ChannelSync(ch))
+                            .expect("Sync failed");
                     }
                 }
                 None
@@ -138,7 +132,7 @@ impl<const CH: usize, const N: usize> ESC<CH, N> {
         }
     }
 
-    fn motor_queue(&mut self, motor_idx: usize) -> Option<&mut Deque<StepperJob, N>> {
+    fn motor_queue(&mut self, motor_idx: usize) -> Option<&mut Deque<Job, N>> {
         if motor_idx >= self.jobs.len() {
             return None;
         }
@@ -181,21 +175,21 @@ where
         }
     }
 
-    pub fn set_reverse(&mut self, reverse: bool) {
+    pub fn reverse(&mut self, reverse: bool) {
         self.reverse = reverse;
     }
 
-    pub fn load(&mut self, job: &StepperSpin) {
-        self.pulses = job.pulses;
-        self.prescaler = MAX_FEED_RATE.saturating_sub(job.feed_rate).max(1);
+    pub fn load(&mut self, spin: &Spin) {
         self.cnt = 0;
-        self.pulse_pin.set_low().ok();
+        self.pulses = spin.pulses;
+        self.prescaler = MAX_FEED_RATE.saturating_sub(spin.feed_rate).max(1);
         let dir = if self.reverse {
-            job.dir.reverse()
+            spin.dir.reverse()
         } else {
-            job.dir
+            spin.dir
         };
         self.dir_pin.set_state(dir.into()).ok();
+        self.pulse_pin.set_low().ok();
         self.en_pin.set_high().ok();
     }
 
