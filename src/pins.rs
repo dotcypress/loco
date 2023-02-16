@@ -4,13 +4,13 @@ use hal::prelude::*;
 use hal::rcc::Rcc;
 use hal::stm32::*;
 
-/// I2C
-pub type I2cScl = PB8<Output<OpenDrain>>;
-pub type I2cSda = PB9<Output<OpenDrain>>;
-
 // SWD
 pub type SwdIo = PA13<DefaultMode>;
 pub type SwdClk = PA14<DefaultMode>;
+
+/// I2C
+pub type I2cScl = PB8<Output<OpenDrain>>;
+pub type I2cSda = PB9<Output<OpenDrain>>;
 
 /// UART
 pub type UartTx = PB6<DefaultMode>;
@@ -67,7 +67,7 @@ pub type GpioSwitchEnable = PF3<Output<PushPull>>;
 pub type GpioSwitchSense = PC15<Input<Floating>>;
 
 pub struct Pins {
-    /// I2C
+    // I2C
     pub i2c_scl: I2cScl,
     pub i2c_sda: I2cSda,
 
@@ -75,11 +75,11 @@ pub struct Pins {
     pub swd_io: SwdIo,
     pub swd_clk: SwdClk,
 
-    /// UART
+    // UART
     pub uart_tx: UartTx,
     pub uart_rx: UartRx,
 
-    /// GPIO
+    // GPIO
     pub g1: G1,
     pub g2: G2,
     pub g3: G3,
@@ -146,19 +146,19 @@ impl Pins {
         let port_f = gpiof.split(rcc);
 
         Self {
-            /// I2C
+            // I2C
             i2c_scl: port_b.pb8.into_open_drain_output_in_state(PinState::High),
             i2c_sda: port_b.pb9.into_open_drain_output_in_state(PinState::High),
 
-            /// SWD
+            // SWD
             swd_io: port_a.pa13,
             swd_clk: port_a.pa14,
 
-            /// UART
+            // UART
             uart_tx: port_b.pb6,
             uart_rx: port_b.pb7,
 
-            /// GPIO
+            // GPIO
             g1: port_a.pa0,
             g2: port_a.pa1,
             g3: port_a.pa2,
