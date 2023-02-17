@@ -26,17 +26,12 @@ impl From<Spin> for Job {
     }
 }
 
-#[derive(Clone, Copy, Debug)]
-pub enum Status {
-    Busy,
-    Idle,
-}
-
-pub struct StepperMotor<PP, DP, EP, SP, REF, const Q: usize> {
+pub struct StepperMotor<PP, DP, EP, SP, FP, REF, const Q: usize> {
     pulse_pin: PP,
     dir_pin: DP,
-    en_pin: EP,
+    enable_pin: EP,
     standby_pin: SP,
+    fault_pin: FP,
     ref_pwm: REF,
     reverse: bool,
     position: i32,
@@ -46,19 +41,21 @@ pub struct StepperMotor<PP, DP, EP, SP, REF, const Q: usize> {
     jobs: Deque<Job, Q>,
 }
 
-impl<PP, DP, EP, SP, REF, const Q: usize> StepperMotor<PP, DP, EP, SP, REF, Q>
+impl<PP, DP, EP, SP, FP, REF, const Q: usize> StepperMotor<PP, DP, EP, SP, FP, REF, Q>
 where
     PP: OutputPin,
     DP: OutputPin,
     EP: OutputPin,
     SP: OutputPin,
-    REF: PwmPin<Duty = u16>,
+    FP: InputPin,
+    REF: PwmPin<Duty = u32>,
 {
     pub fn new(
         pulse_pin: PP,
         dir_pin: DP,
-        en_pin: EP,
+        enable_pin: EP,
         standby_pin: SP,
+        fault_pin: FP,
         ref_pwm: REF,
         reverse: bool,
     ) -> Self {
@@ -70,23 +67,37 @@ where
             reverse,
             pulse_pin,
             dir_pin,
-            en_pin,
+            enable_pin,
             standby_pin,
+            fault_pin,
             ref_pwm,
             jobs: Deque::new(),
         }
     }
 
-    pub fn switch_power(&mut self, on: bool) {
-        if on {
-            self.standby_pin.set_high().ok();
-        } else {
-            self.standby_pin.set_low().ok();
-        }
+    pub fn fault_detected(&self) -> bool {
+        self.fault_pin.is_low().unwrap_or(true)
     }
 
-    pub fn set_tork(&mut self, tork: u16) {
-        self.ref_pwm.set_duty(tork);
+    pub fn on(&mut self) {
+        self.standby_pin.set_high().ok();
+    }
+
+    pub fn off(&mut self) {
+        self.standby_pin.set_low().ok();
+    }
+
+    pub fn enable(&mut self) {
+        self.enable_pin.set_high().ok();
+    }
+
+    pub fn disable(&mut self) {
+        self.enable_pin.set_low().ok();
+    }
+
+    pub fn set_tork(&mut self, tork: u8) {
+        let duty = self.ref_pwm.get_max_duty() as u32 * tork as u32 / 255;
+        self.ref_pwm.set_duty(duty as _);
     }
 
     pub fn free_space(&self) -> usize {
@@ -98,8 +109,23 @@ where
     }
 
     pub fn poll(&mut self, epoch: usize) -> Status {
-        if self.pulses == 0 {
-            self.en_pin.set_low().ok();
+        if self.fault_detected() {
+            return Status::Fault;
+        }
+
+        if self.pulses != 0 {
+            if self.cnt >= self.prescaler {
+                let delta = self.pulses.signum();
+                self.position += delta;
+                self.pulses -= delta;
+                self.cnt = 0;
+                self.pulse_pin.set_high().ok();
+            } else {
+                self.cnt += 1;
+                self.pulse_pin.set_low().ok();
+            }
+            Status::Busy
+        } else {
             loop {
                 match self.jobs.front() {
                     Some(Job::Spin(spin)) => {
@@ -116,8 +142,6 @@ where
                             self.dir_pin.set_high().ok();
                         }
                         self.pulse_pin.set_low().ok();
-                        self.en_pin.set_high().ok();
-
                         self.jobs.pop_front();
                         return Status::Busy;
                     }
@@ -129,17 +153,5 @@ where
                 }
             }
         }
-
-        if self.cnt >= self.prescaler {
-            let delta = self.pulses.signum();
-            self.position += delta;
-            self.pulses -= delta;
-            self.cnt = 0;
-            self.pulse_pin.set_high().ok();
-        } else {
-            self.cnt += 1;
-            self.pulse_pin.set_low().ok();
-        }
-        Status::Busy
     }
 }

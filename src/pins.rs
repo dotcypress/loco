@@ -25,14 +25,14 @@ pub type G5 = PA4<DefaultMode>;
 pub type G6 = PA5<DefaultMode>;
 
 // DC Motors
-pub type MotorsRef = PB4<DefaultMode>;
-pub type MotorsFault = PD2<Input<Floating>>;
-pub type MotorsStandby = PD0<Output<PushPull>>;
-pub type MotorsEnable = PD1<Output<PushPull>>;
+pub type MotorRef = PB4<DefaultMode>;
+pub type MotorFault = PD2<Input<Floating>>;
+pub type MotorStandby = PD0<Output<PushPull>>;
+pub type MotorEnable = PD1<Output<PushPull>>;
 pub type Motor1Phase = PA12<Output<PushPull>>;
-pub type Motor1PWM = PA10<Output<PushPull>>;
+pub type Motor1PWM = PA10<DefaultMode>;
 pub type Motor2Phase = PA15<Output<PushPull>>;
-pub type Motor2PWM = PA11<Output<PushPull>>;
+pub type Motor2PWM = PA11<DefaultMode>;
 
 // Stepper Motors
 pub type Stepper1Ref = PC7<DefaultMode>;
@@ -63,8 +63,17 @@ pub type Switch1Sense = PB11<Input<Floating>>;
 pub type Switch2Enable = PF2<Output<PushPull>>;
 pub type Switch2Sense = PF1<Input<Floating>>;
 
-pub type GpioSwitchEnable = PF3<Output<PushPull>>;
-pub type GpioSwitchSense = PC15<Input<Floating>>;
+pub type Switch3Enable = PF3<Output<PushPull>>;
+pub type Switch3Sense = PC15<Input<Floating>>;
+
+pub struct Gpio {
+    pub g1: G1,
+    pub g2: G2,
+    pub g3: G3,
+    pub g4: G4,
+    pub g5: G5,
+    pub g6: G6,
+}
 
 pub struct Pins {
     // I2C
@@ -80,22 +89,17 @@ pub struct Pins {
     pub uart_rx: UartRx,
 
     // GPIO
-    pub g1: G1,
-    pub g2: G2,
-    pub g3: G3,
-    pub g4: G4,
-    pub g5: G5,
-    pub g6: G6,
+    pub gpio: Gpio,
 
     // DC Motors
-    pub motors_ref: MotorsRef,
-    pub motors_fault: MotorsFault,
-    pub motors_standby: MotorsStandby,
-    pub motors_enable: MotorsEnable,
+    pub motor_ref: MotorRef,
+    pub motor_fault: MotorFault,
+    pub motor_standby: MotorStandby,
+    pub motor_enable: MotorEnable,
     pub motor1_phase: Motor1Phase,
-    pub motor1pwm: Motor1PWM,
+    pub motor1_pwm: Motor1PWM,
     pub motor2_phase: Motor2Phase,
-    pub motor2pwm: Motor2PWM,
+    pub motor2_pwm: Motor2PWM,
 
     // Stepper Motors
     pub stepper1_ref: Stepper1Ref,
@@ -126,8 +130,8 @@ pub struct Pins {
     pub switch2_enable: Switch2Enable,
     pub switch2_sense: Switch2Sense,
 
-    pub gpio_switch_enable: GpioSwitchEnable,
-    pub gpio_switch_sense: GpioSwitchSense,
+    pub switch3_enable: Switch3Enable,
+    pub switch3_sense: Switch3Sense,
 }
 
 impl Pins {
@@ -159,22 +163,24 @@ impl Pins {
             uart_rx: port_b.pb7,
 
             // GPIO
-            g1: port_a.pa0,
-            g2: port_a.pa1,
-            g3: port_a.pa2,
-            g4: port_a.pa3,
-            g5: port_a.pa4,
-            g6: port_a.pa5,
+            gpio: Gpio {
+                g1: port_a.pa0,
+                g2: port_a.pa1,
+                g3: port_a.pa2,
+                g4: port_a.pa3,
+                g5: port_a.pa4,
+                g6: port_a.pa5,
+            },
 
             // DC Motors
-            motors_ref: port_b.pb4,
-            motors_fault: port_d.pd2.into(),
-            motors_standby: port_d.pd0.into(),
-            motors_enable: port_d.pd1.into(),
+            motor_ref: port_b.pb4,
+            motor_fault: port_d.pd2.into(),
+            motor_standby: port_d.pd0.into(),
+            motor_enable: port_d.pd1.into(),
             motor1_phase: port_a.pa12.into(),
-            motor1pwm: port_a.pa10.into(),
             motor2_phase: port_a.pa15.into(),
-            motor2pwm: port_a.pa11.into(),
+            motor1_pwm: port_a.pa10,
+            motor2_pwm: port_a.pa11,
 
             // Stepper Motors
             stepper1_ref: port_c.pc7,
@@ -205,8 +211,8 @@ impl Pins {
             switch2_enable: port_f.pf2.into(),
             switch2_sense: port_f.pf1.into(),
 
-            gpio_switch_enable: port_f.pf3.into(),
-            gpio_switch_sense: port_c.pc15.into(),
+            switch3_enable: port_f.pf3.into(),
+            switch3_sense: port_c.pc15.into(),
         }
     }
 }

@@ -11,8 +11,7 @@ repository = "https://github.com/dotcypress/loco"
 authors = ["Vitaly Domnikov <oss@vitaly.codes>"]
 
 [dependencies]
-cortex-m-rt = "0.7.2"
-panic-halt = "0.2.0"
+cortex-m-rt = "0.7.3"
 stm32c0xx-hal = { git = "https://github.com/stm32-rs/stm32c0xx-hal", features = ["rt", "stm32c031"] }
 heapless = "0.7.16"
 
