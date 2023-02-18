@@ -29,39 +29,39 @@ pub type MotorRef = PB4<DefaultMode>;
 pub type MotorFault = PD2<Input<Floating>>;
 pub type MotorStandby = PD0<Output<PushPull>>;
 pub type MotorEnable = PD1<Output<PushPull>>;
-pub type Motor1Phase = PA12<Output<PushPull>>;
-pub type Motor1PWM = PA10<DefaultMode>;
-pub type Motor2Phase = PA15<Output<PushPull>>;
-pub type Motor2PWM = PA11<DefaultMode>;
+pub type MotorAPhase = PA15<Output<PushPull>>;
+pub type MotorAPWM = PA11<DefaultMode>;
+pub type MotorBPhase = PA12<Output<PushPull>>;
+pub type MotorBPWM = PA10<DefaultMode>;
 
 // Stepper Motors
-pub type Stepper1Ref = PC7<DefaultMode>;
-pub type Stepper1Fault = PC13<Input<Floating>>;
-pub type Stepper1Standby = PB5<Output<PushPull>>;
-pub type Stepper1Enable = PC14<Output<PushPull>>;
-pub type Stepper1Step = PD3<Output<PushPull>>;
-pub type Stepper1Dir = PB3<Output<PushPull>>;
+pub type MotorXRef = PC7<DefaultMode>;
+pub type MotorXFault = PC13<Input<Floating>>;
+pub type MotorXStandby = PB5<Output<PushPull>>;
+pub type MotorXEnable = PC14<Output<PushPull>>;
+pub type MotorXStep = PD3<Output<PushPull>>;
+pub type MotorXDir = PB3<Output<PushPull>>;
 
-pub type Stepper2Ref = PB1<DefaultMode>;
-pub type Stepper2Fault = PB10<Input<Floating>>;
-pub type Stepper2Standby = PB0<Output<PushPull>>;
-pub type Stepper2Enable = PB2<Output<PushPull>>;
-pub type Stepper2Step = PA6<Output<PushPull>>;
-pub type Stepper2Dir = PA7<Output<PushPull>>;
+pub type MotorYRef = PB1<DefaultMode>;
+pub type MotorYFault = PB10<Input<Floating>>;
+pub type MotorYStandby = PB0<Output<PushPull>>;
+pub type MotorYEnable = PB2<Output<PushPull>>;
+pub type MotorYStep = PA6<Output<PushPull>>;
+pub type MotorYDir = PA7<Output<PushPull>>;
 
-pub type Stepper3Ref = PA8<DefaultMode>;
-pub type Stepper3Fault = PC6<Input<Floating>>;
-pub type Stepper3Standby = PB15<Output<PushPull>>;
-pub type Stepper3Enable = PA9<Output<PushPull>>;
-pub type Stepper3Step = PB14<Output<PushPull>>;
-pub type Stepper3Dir = PB13<Output<PushPull>>;
+pub type MotorZRef = PA8<DefaultMode>;
+pub type MotorZFault = PC6<Input<Floating>>;
+pub type MotorZStandby = PB15<Output<PushPull>>;
+pub type MotorZEnable = PA9<Output<PushPull>>;
+pub type MotorZStep = PB14<Output<PushPull>>;
+pub type MotorZDir = PB13<Output<PushPull>>;
 
 // Power switches
 pub type Switch1Enable = PB12<Output<PushPull>>;
 pub type Switch1Sense = PB11<Input<Floating>>;
 
-pub type Switch2Enable = PF2<Output<PushPull>>;
-pub type Switch2Sense = PF1<Input<Floating>>;
+pub type Switch2Enable = PF1<Output<PushPull>>;
+pub type Switch2Sense = PF0<Input<Floating>>;
 
 pub type Switch3Enable = PF3<Output<PushPull>>;
 pub type Switch3Sense = PC15<Input<Floating>>;
@@ -96,32 +96,32 @@ pub struct Pins {
     pub motor_fault: MotorFault,
     pub motor_standby: MotorStandby,
     pub motor_enable: MotorEnable,
-    pub motor1_phase: Motor1Phase,
-    pub motor1_pwm: Motor1PWM,
-    pub motor2_phase: Motor2Phase,
-    pub motor2_pwm: Motor2PWM,
+    pub motor_a_phase: MotorAPhase,
+    pub motor_a_pwm: MotorAPWM,
+    pub motor_b_phase: MotorBPhase,
+    pub motor_b_pwm: MotorBPWM,
 
     // Stepper Motors
-    pub stepper1_ref: Stepper1Ref,
-    pub stepper1_fault: Stepper1Fault,
-    pub stepper1_standby: Stepper1Standby,
-    pub stepper1_enable: Stepper1Enable,
-    pub stepper1_step: Stepper1Step,
-    pub stepper1_dir: Stepper1Dir,
+    pub motor_x_ref: MotorXRef,
+    pub motor_x_fault: MotorXFault,
+    pub motor_x_standby: MotorXStandby,
+    pub motor_x_enable: MotorXEnable,
+    pub motor_x_step: MotorXStep,
+    pub motor_x_dir: MotorXDir,
 
-    pub stepper2_ref: Stepper2Ref,
-    pub stepper2_fault: Stepper2Fault,
-    pub stepper2_standby: Stepper2Standby,
-    pub stepper2_enable: Stepper2Enable,
-    pub stepper2_step: Stepper2Step,
-    pub stepper2_dir: Stepper2Dir,
+    pub motor_y_ref: MotorYRef,
+    pub motor_y_fault: MotorYFault,
+    pub motor_y_standby: MotorYStandby,
+    pub motor_y_enable: MotorYEnable,
+    pub motor_y_step: MotorYStep,
+    pub motor_y_dir: MotorYDir,
 
-    pub stepper3_ref: Stepper3Ref,
-    pub stepper3_fault: Stepper3Fault,
-    pub stepper3_standby: Stepper3Standby,
-    pub stepper3_enable: Stepper3Enable,
-    pub stepper3_step: Stepper3Step,
-    pub stepper3_dir: Stepper3Dir,
+    pub motor_z_ref: MotorZRef,
+    pub motor_z_fault: MotorZFault,
+    pub motor_z_standby: MotorZStandby,
+    pub motor_z_enable: MotorZEnable,
+    pub motor_z_step: MotorZStep,
+    pub motor_z_dir: MotorZDir,
 
     // Power switches
     pub switch1_enable: Switch1Enable,
@@ -177,39 +177,39 @@ impl Pins {
             motor_fault: port_d.pd2.into(),
             motor_standby: port_d.pd0.into(),
             motor_enable: port_d.pd1.into(),
-            motor1_phase: port_a.pa12.into(),
-            motor2_phase: port_a.pa15.into(),
-            motor1_pwm: port_a.pa10,
-            motor2_pwm: port_a.pa11,
+            motor_a_phase: port_a.pa15.into(),
+            motor_b_phase: port_a.pa12.into(),
+            motor_a_pwm: port_a.pa11,
+            motor_b_pwm: port_a.pa10,
 
             // Stepper Motors
-            stepper1_ref: port_c.pc7,
-            stepper1_fault: port_c.pc13.into(),
-            stepper1_standby: port_b.pb5.into(),
-            stepper1_enable: port_c.pc14.into(),
-            stepper1_step: port_d.pd3.into(),
-            stepper1_dir: port_b.pb3.into(),
+            motor_x_ref: port_c.pc7,
+            motor_x_fault: port_c.pc13.into(),
+            motor_x_standby: port_b.pb5.into(),
+            motor_x_enable: port_c.pc14.into(),
+            motor_x_step: port_d.pd3.into(),
+            motor_x_dir: port_b.pb3.into(),
 
-            stepper2_ref: port_b.pb1,
-            stepper2_fault: port_b.pb10.into(),
-            stepper2_standby: port_b.pb0.into(),
-            stepper2_enable: port_b.pb2.into(),
-            stepper2_step: port_a.pa6.into(),
-            stepper2_dir: port_a.pa7.into(),
+            motor_y_ref: port_b.pb1,
+            motor_y_fault: port_b.pb10.into(),
+            motor_y_standby: port_b.pb0.into(),
+            motor_y_enable: port_b.pb2.into(),
+            motor_y_step: port_a.pa6.into(),
+            motor_y_dir: port_a.pa7.into(),
 
-            stepper3_ref: port_a.pa8,
-            stepper3_fault: port_c.pc6.into(),
-            stepper3_standby: port_b.pb15.into(),
-            stepper3_enable: port_a.pa9.into(),
-            stepper3_step: port_b.pb14.into(),
-            stepper3_dir: port_b.pb13.into(),
+            motor_z_ref: port_a.pa8,
+            motor_z_fault: port_c.pc6.into(),
+            motor_z_standby: port_b.pb15.into(),
+            motor_z_enable: port_a.pa9.into(),
+            motor_z_step: port_b.pb14.into(),
+            motor_z_dir: port_b.pb13.into(),
 
             // Power switches
             switch1_enable: port_b.pb12.into(),
             switch1_sense: port_b.pb11.into(),
 
-            switch2_enable: port_f.pf2.into(),
-            switch2_sense: port_f.pf1.into(),
+            switch2_enable: port_f.pf1.into(),
+            switch2_sense: port_f.pf0.into(),
 
             switch3_enable: port_f.pf3.into(),
             switch3_sense: port_c.pc15.into(),

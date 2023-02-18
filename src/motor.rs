@@ -1,15 +1,15 @@
 use crate::*;
 
-pub enum Channel {
-    Channel1,
-    Channel2,
+pub enum DCMotor {
+    MotorA,
+    MotorB,
 }
 pub struct MotorController {
-    phase_pins: (Motor1Phase, Motor2Phase),
+    phase_pins: (MotorAPhase, MotorBPhase),
     ref_pwm: PwmPin<RefTimer, timer::Channel1>,
     speed_pwm: (
-        PwmPin<MotorTimer, timer::Channel3>,
         PwmPin<MotorTimer, timer::Channel4>,
+        PwmPin<MotorTimer, timer::Channel3>,
     ),
     enable_pin: MotorEnable,
     standby_pin: MotorStandby,
@@ -21,10 +21,10 @@ impl MotorController {
     pub fn new(
         ref_pwm: PwmPin<RefTimer, timer::Channel1>,
         speed_pwm: (
-            PwmPin<MotorTimer, timer::Channel3>,
             PwmPin<MotorTimer, timer::Channel4>,
+            PwmPin<MotorTimer, timer::Channel3>,
         ),
-        phase_pins: (Motor1Phase, Motor2Phase),
+        phase_pins: (MotorAPhase, MotorBPhase),
         enable_pin: MotorEnable,
         standby_pin: MotorStandby,
         fault_pin: MotorFault,
@@ -68,19 +68,17 @@ impl MotorController {
     pub fn set_tork(&mut self, tork: u8) {
         let duty = self.ref_pwm.get_max_duty() as u32 * tork as u32 / 255;
         self.ref_pwm.set_duty(duty as _);
+        self.ref_pwm.enable();
     }
 
-    pub fn set_speed(&mut self, ch: Channel, val: i8) -> Status {
-        if self.fault_detected() {
-            return Status::Fault;
-        }
+    pub fn set_speed(&mut self, ch: DCMotor, val: i8) -> Status {
         let duty = self.max_duty * val.unsigned_abs() as u32 / 127;
         match ch {
-            Channel::Channel1 => {
+            DCMotor::MotorA => {
                 self.speed_pwm.0.set_duty(duty as _);
-                self.phase_pins.0.set_state(val.is_positive().into()).ok();
+                self.phase_pins.0.set_state(val.is_negative().into()).ok();
             }
-            Channel::Channel2 => {
+            DCMotor::MotorB => {
                 self.speed_pwm.1.set_duty(duty as _);
                 self.phase_pins.1.set_state(val.is_positive().into()).ok();
             }

@@ -57,20 +57,19 @@ where
         standby_pin: SP,
         fault_pin: FP,
         ref_pwm: REF,
-        reverse: bool,
     ) -> Self {
         Self {
-            position: 0,
-            pulses: 0,
-            cnt: 0,
-            prescaler: 0,
-            reverse,
             pulse_pin,
             dir_pin,
             enable_pin,
             standby_pin,
             fault_pin,
             ref_pwm,
+            position: 0,
+            pulses: 0,
+            cnt: 0,
+            prescaler: 0,
+            reverse: false,
             jobs: Deque::new(),
         }
     }
@@ -79,7 +78,13 @@ where
         self.fault_pin.is_low().unwrap_or(true)
     }
 
+    pub fn set_reverse(&mut self, reverse: bool) {
+        self.reverse = reverse;
+    }
+
     pub fn on(&mut self) {
+        self.pulse_pin.set_low().ok();
+        self.dir_pin.set_high().ok();
         self.standby_pin.set_high().ok();
     }
 
@@ -97,6 +102,7 @@ where
 
     pub fn set_tork(&mut self, tork: u8) {
         let duty = self.ref_pwm.get_max_duty() as u32 * tork as u32 / 255;
+        self.ref_pwm.enable();
         self.ref_pwm.set_duty(duty as _);
     }
 

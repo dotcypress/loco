@@ -6,8 +6,8 @@
 
   (title_block
     (title "loco")
-    (date "2023-02-04")
-    (rev "0x03")
+    (date "2023-02-18")
+    (rev "0x04")
     (company "vitaly.codes")
   )
 
@@ -4273,7 +4273,7 @@
     (effects (font (size 1.27 1.27)) (justify right bottom))
     (uuid 0242fd40-7db3-42d2-bc4d-b2c546a0036a)
   )
-  (label "PWR2_SENSE" (at 316.23 52.07 180) (fields_autoplaced)
+  (label "PWR2_SENSE" (at 316.23 49.53 180) (fields_autoplaced)
     (effects (font (size 1.27 1.27)) (justify right bottom))
     (uuid 04499c94-f665-4f7c-8860-b917ef00547e)
   )
@@ -4409,7 +4409,7 @@
     (effects (font (size 1.27 1.27)) (justify left bottom))
     (uuid 4426a355-b37a-4114-a446-38f08a509e55)
   )
-  (label "PWR2_SWITCH" (at 316.23 54.61 180) (fields_autoplaced)
+  (label "PWR2_SWITCH" (at 316.23 52.07 180) (fields_autoplaced)
     (effects (font (size 1.27 1.27)) (justify right bottom))
     (uuid 449758e4-5467-4f53-ac4d-f10b8d0ddf08)
   )
@@ -4421,7 +4421,7 @@
     (effects (font (size 1.27 1.27)) (justify left bottom))
     (uuid 50f5b93a-7148-4599-8822-6c2667536bd2)
   )
-  (label "RESET" (at 316.23 49.53 180) (fields_autoplaced)
+  (label "RESET" (at 316.23 54.61 180) (fields_autoplaced)
     (effects (font (size 1.27 1.27)) (justify right bottom))
     (uuid 54aea5b2-3338-4ed2-83b0-64879f26fec7)
   )
