@@ -63,11 +63,15 @@ pub enum Status {
     Fault,
 }
 
-pub struct Loco {
+pub struct ESC {
     pub motor_ab: MotorController,
     pub motor_x: MotorX,
     pub motor_y: MotorY,
     pub motor_z: MotorZ,
+}
+
+pub struct Loco {
+    pub esc: ESC,
     pub power_switch1: PowerSwitch1,
     pub power_switch2: PowerSwitch2,
     pub power_switch3: PowerSwitch3,
@@ -129,34 +133,24 @@ impl Loco {
             ref_pwm.bind_pin(pins.motor_z_ref),
         );
 
-        let power_switch1 = PowerSwitch::new(
-            pins.switch1_enable,
-            pins.switch1_sense,
-        );
+        let power_switch1 = PowerSwitch::new(pins.switch1_enable, pins.switch1_sense);
+        let power_switch2 = PowerSwitch::new(pins.switch2_enable, pins.switch2_sense);
+        let power_switch3 = PowerSwitch::new(pins.switch3_enable, pins.switch3_sense);
 
-        let power_switch2 = PowerSwitch::new(
-            pins.switch2_enable,
-            pins.switch2_sense,
-        );
-
-        let power_switch3 = PowerSwitch::new(
-            pins.switch3_enable,
-            pins.switch3_sense,
-        );
-
-        let gpio = pins.gpio;
 
         Self {
-            motor_ab,
-            motor_x,
-            motor_y,
-            motor_z,
             power_switch1,
             power_switch2,
             power_switch3,
             serial,
             i2c,
-            gpio,
+            gpio: pins.gpio,
+            esc: ESC {
+                motor_ab,
+                motor_x,
+                motor_y,
+                motor_z,
+            },
         }
     }
 }
