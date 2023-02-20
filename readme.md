@@ -2,6 +2,8 @@
 
 Toy CNC platform.
 
+<img src="pcb/loco.jpg" width="700" />
+
 ## License
 
 Licensed under either of
