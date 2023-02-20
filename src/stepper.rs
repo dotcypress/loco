@@ -100,8 +100,8 @@ where
         self.enable_pin.set_low().ok();
     }
 
-    pub fn set_tork(&mut self, tork: u8) {
-        let duty = self.ref_pwm.get_max_duty() as u32 * tork as u32 / 255;
+    pub fn set_reference_voltage(&mut self, ref_v: u8) {
+        let duty = self.ref_pwm.get_max_duty() as u32 * ref_v as u32 / 255;
         self.ref_pwm.enable();
         self.ref_pwm.set_duty(duty as _);
     }
